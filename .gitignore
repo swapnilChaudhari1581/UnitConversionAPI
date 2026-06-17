@@ -1,0 +1,41 @@
+# .NET / ASP.NET Core build artifacts
+bin/
+obj/
+
+# IDE & editor settings
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+NuGet.Config
+
+# Test results
+TestResults/
+coverage/
+*.trx
+*.coveragexml
+
+# User secrets
+secrets.json
+appsettings.*.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
