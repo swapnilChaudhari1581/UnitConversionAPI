@@ -34,7 +34,7 @@ units of measurement across **7 categories** and **60+ units**.
 - Discovery endpoints to list all units and categories
 - Case-insensitive unit keys with common abbreviation aliases
 - RFC 7807 `application/problem+json` error responses
-- OpenAPI spec auto-generated at `/openapi/v1.json`
+- OpenAPI spec auto-generated at `/openapi/v1.json` with interactive Scalar UI at `/scalar/v1`
 - Structured logging via Microsoft.Extensions.Logging
 
 ---
@@ -44,6 +44,7 @@ units of measurement across **7 categories** and **60+ units**.
 - **.NET 10** (LTS) — `net10.0`
 - **ASP.NET Core** — controller-based Web API
 - **Microsoft.AspNetCore.OpenApi** — OpenAPI spec generation
+- **Scalar.AspNetCore** — interactive API explorer UI (replaces Swagger UI)
 - **xUnit + FluentAssertions + NSubstitute** — test suite
 - **Microsoft.AspNetCore.Mvc.Testing** — in-process integration tests
 
@@ -98,10 +99,65 @@ The API starts on:
 - HTTP:  `http://localhost:5176`
 - HTTPS: `https://localhost:7275`
 
-The OpenAPI specification is served at:  
-`http://localhost:5176/openapi/v1.json`
+The interactive API explorer (Scalar UI) is available at:
+- HTTP:  `http://localhost:5176/scalar/v1`
+- HTTPS: `https://localhost:7275/scalar/v1`
 
-You can import this JSON into **Postman**, **Insomnia**, or any OpenAPI-compatible tool.
+The raw OpenAPI JSON spec is at `http://localhost:5176/openapi/v1.json` — importable into Postman, Insomnia, or any OpenAPI-compatible tool.
+
+---
+
+## Testing with Scalar UI
+
+Scalar is a modern interactive API explorer (replaces Swagger UI) that is built into this project.
+
+### Steps
+
+1. **Start the API** using any of the methods above (CLI, Visual Studio, or IIS Express).
+
+2. **Open the Scalar UI** in your browser:
+   - If running via `dotnet run`: `http://localhost:5176/scalar/v1`
+   - If running via Visual Studio / IIS Express: `https://localhost:44314/scalar/v1`  
+     *(Visual Studio will open this automatically when you press F5)*
+
+3. **Browse the endpoints** listed in the left sidebar:
+   - `GET /api/conversions/convert` — convert via query parameters
+   - `POST /api/conversions/convert` — convert via JSON body
+   - `GET /api/conversions/units` — list all supported units
+   - `GET /api/conversions/categories` — list all categories
+
+4. **Send a test request** — example: convert 100 °C to °F
+   - Click `GET /api/conversions/convert`
+   - Click **"Test Request"**
+   - Fill in the query parameters:
+     | Parameter | Value |
+     |-----------|-------|
+     | `value`   | `100` |
+     | `from`    | `celsius` |
+     | `to`      | `fahrenheit` |
+   - Click **Send** — you should get a `200 OK` response:
+     ```json
+     {
+       "inputValue": 100,
+       "inputUnit": "Celsius",
+       "inputSymbol": "°C",
+       "outputValue": 212,
+       "outputUnit": "Fahrenheit",
+       "outputSymbol": "°F",
+       "category": "Temperature"
+     }
+     ```
+
+5. **Try a POST request** — convert 1 km to miles:
+   - Click `POST /api/conversions/convert`
+   - Click **"Test Request"**
+   - Set the request body:
+     ```json
+     { "value": 1, "from": "kilometer", "to": "mile" }
+     ```
+   - Click **Send** → `outputValue` should be `0.6213711922`
+
+6. **Discover all units** — click `GET /api/conversions/units` → Send to see all 60+ supported units. Filter by category with the optional `category` query parameter (e.g. `Temperature`, `Length`, `Weight`).
 
 ---
 
