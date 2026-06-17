@@ -1,3 +1,4 @@
+using Scalar.AspNetCore;
 using UnitConversionAPI.Data;
 using UnitConversionAPI.Middleware;
 using UnitConversionAPI.Services;
@@ -32,10 +33,16 @@ var app = builder.Build();
 // every subsequent middleware including routing and controller execution.
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+// OpenAPI JSON spec + Scalar interactive UI — available in all environments
+// so the API is explorable when running on both HTTP and HTTPS profiles.
+app.MapOpenApi();                    // serves /openapi/v1.json
+app.MapScalarApiReference(options =>
+{
+    options.Title = "Unit Conversion API";
+});                                  // serves /scalar/v1
+
 if (app.Environment.IsDevelopment())
 {
-    // Serves the OpenAPI JSON at /openapi/v1.json
-    app.MapOpenApi();
     app.UseCors();
 }
 
